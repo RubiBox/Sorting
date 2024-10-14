@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sorting</title>
+  <style>
+    body{
+      background:#fff; 
+    }  
+  
+    #sticks{
+      background:#fafaff;
+      height:200px;
+      margin: 0;
+      width:90%;
+      margin: 10px auto;
+      border-radius:10px;
+      display:flex;
+      align-items:end;
+      padding:5px;
+      border: 1px solid black;
+      justify-content:space-between;
+      overflow: scroll;
+      gap: 10px;
+    }  
+  
+    .stick{
+      transition:height 1s;
+      background:#6667ff;
+      color: white;
+      padding-top: 0px;
+      text-align: center;
+      width:200px;
+      border-radius:10px 10px 0 0;
+    }
+    
+    .buttons{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding:0 5% ;
+    }
+    
+    button{
+      color: white;
+      background-color: #6666ff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+    }
+    
+    input{
+      width: 90%;
+      margin: 5px auto;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid;
+    }
+    center{
+      width: 50%;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .pattern{
+      background: black;
+      color: white;
+      height: 2000px;
+      width: 100%;
+      overflow: scroll;
+      margin: 0;
+      border-radius: 1px;
+      
+      font-family: "Courier New", Courier, monospace;
+    }
+    
+  .pattern p {
+    
+      }
+  </style>
+</head>
+<body>
+<h1>Sorting Visualization</h1><p>Set Speed :</p>
+<div style="width:100%;background-color:transition;display:flex;">
+  <input onchange="speed=this.value" type="number"  placeholder="Enter Speed">
+</div>
+<p>Enter Number of Sorting :</p>
+<div style="width:100%;background-color:transition;display:flex;justify-content:center;align-items:center" >
+  <input type="number" id="size_s" min="1" max="100" placeholder="Enter Size" oninput="sorting_size()">
+</div>
+<div style="width:100%;background-color:white;display:flex;align-items:center;justify-content:center;">
+ <div style="border:1px solid;width:90%;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center; "><center id="cur">--</center><center style="border-left: 1px solid; color:gray;"  class="center">Swaping</center><center style="border-left: 1px solid;" id="swap" class="center">--</center>
+  
+</div>
+</div>
+
+<div id="sticks">
+
+  
+</div>
+<div class="buttons">
+  <button onclick="bubble()"> Sort</button>
+  <button onclick="gen()">Generate New Bars</button>
+</div><br><br><br>
+<center><h2 style="color:gray" id="s">press sort</h2></center><br><br>
+
+<code>
+  
+    <div class="pattern">
+      <h2>process of Sort </h2><hr>
+      <div id="output">
+      
+      </div>
+    </div>
+  
+</code>
+<script>
+    var sort=[];
+  let size=10;
+  let speed=1000;
+  let sticks = document.getElementById('sticks');
+  
+  
+  
+  function gen(){
+    sticks.innerHTML = "";
+    let generatedValues = new Set();
+    
+    for(let i = 1; i <= size; i++){
+        let value;
+
+        do {
+            value = Math.floor(Math.random() * 100);  
+        } while(generatedValues.has(value));  
+
+        generatedValues.add(value);  
+        sort[i] = value;
+        let stick='';
+        
+          stick = "<div class='stick' style='height:" + value + "%' value='" + value + "'>" +
+          value
+          + "</div>";
+        
+        sticks.innerHTML += stick;
+    }
+}
+  function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, speed));
+}
+
+  
+  
+  async function find(repl1,repl2,start){
+    for(let i=0;i<size;i++){
+      
+      let sticks=document.getElementById('sticks');
+      
+      let height=sticks.children[i].style.height;
+      let value=height.replace("%",'');
+      if(repl1==value){
+        sticks.children[i].style.background='#0f0'
+       sticks.children[i].style.height=repl2+"%" 
+
+       
+         sticks.children[i].innerHTML=repl2
+       
+      }
+      if(repl2==value){
+        sticks.children[i].style.background='#0f0'
+        
+       sticks.children[i].style.height=repl1+"%" 
+       
+         sticks.children[i].innerHTML=repl1
+       
+       await sleep(1000)
+    
+      }
+      
+      
+      
+    sticks.children[i].style.background='#6667ff'
+      
+    }
+    await sleep(10)
+    
+    
+    
+  }
+  
+  function check(){
+    let ch=1;
+    for(let i=0;i<size;i++){
+      if(sort[i]>sort[i+1]){
+        
+        ch=2
+      }
+    }
+    if(ch==1){
+      return true
+    }else{
+      return false
+    }
+  }
+  
+  function swap(i,j){
+    let sticks=document.getElementById('sticks')
+    document.getElementById('swap').innerHTML=sort[j+1]
+    document.getElementById('cur').innerHTML=sort[j]
+    if(sort[j]>=sort[j+1])
+    {
+      
+      
+      let temp=sort[j+1];
+      sort[j+1]=sort[j]
+      
+      sort[j]=temp;
+      sticks.children[j].style.background='#0f0'
+      find(sort[j],sort[j+1],j)
+    
+    }else{
+      let sticks=document.getElementById('sticks')
+      
+    }
+  }
+  
+  async function bubble(){
+    document.getElementById('output').innerHTML='';
+    document.getElementById('s').innerHTML='processing'
+    let sticks=document.getElementById('sticks')
+    
+    for(var i=1;i<size;i++)
+    {
+      
+     
+      for(var j=1;j<size;j++){
+        let output='<p>$ ';
+        for(let k=1;k<=size;k++){
+          output+=sort[k]+' ';
+        }
+        output+='</p>'
+        document.getElementById('output').innerHTML+=output;
+        swap(i,j);
+        sticks.children[j].style.background='#6667ff'
+        
+        await sleep(1000)
+        
+        
+        
+      }
+       if(check()){
+          break;
+        }
+    }
+    document.getElementById('s').innerHTML='complated'
+    document.getElementById('cur').innerHTML="--"
+      document.getElementById('swap').innerHTML="--"
+  }
+  function sorting_size(){
+    size=document.getElementById('size_s').value;
+    if(size<=100 && size>=1){
+      gen();
+    }else{
+      alert("please Select between 1 to 100")
+    }
+  }
+  gen();
+</script>
+
+</body>
+</html>                                     
